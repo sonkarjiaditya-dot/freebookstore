@@ -90,7 +90,7 @@ export default function Admin() {
     }));
   }
 
-  function saveBook(e) {
+  async function saveBook(e) {
     e.preventDefault();
 
     if (!form.title.trim() || !form.author.trim()) {
@@ -98,46 +98,152 @@ export default function Admin() {
       return;
     }
 
-    if (editingId) {
-      setBooks((prev) =>
-        prev.map((book) =>
-          book.id === editingId ? { ...form } : book
-        )
+    let adminSecret = sessionStorage.getItem("freebookstore_admin_secret");
+
+    if (!adminSecret) {
+      adminSecret = window.prompt("Enter your Admin Secret:");
+
+      if (!adminSecret) {
+        return;
+      }
+
+      sessionStorage.setItem(
+        "freebookstore_admin_secret",
+        adminSecret
       );
-    } else {
-      setBooks((prev) => [...prev, { ...form }]);
     }
 
-    setShowForm(false);
-    setEditingId(null);
-    setForm(emptyBook);
+    const updatedBooks = editingId
+      ? books.map((book) =>
+          book.id === editingId ? { ...form } : book
+        )
+      : [...books, { ...form }];
+
+    try {
+      const response = await fetch("/api/books", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-secret": adminSecret,
+        },
+        body: JSON.stringify({
+          books: updatedBooks,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          sessionStorage.removeItem(
+            "freebookstore_admin_secret"
+          );
+        }
+
+        throw new Error(data.error || "Could not save books.");
+      }
+
+      setBooks(updatedBooks);
+      setShowForm(false);
+      setEditingId(null);
+      setForm(emptyBook);
+
+      alert("Book saved successfully. The website will update after deployment.");
+    } catch (error) {
+      console.error(error);
+      alert(error.message || "Failed to save book.");
+    }
   }
 
-  function deleteBook(id) {
+  async function updateBooksOnServer(updatedBooks) {
+    let adminSecret = sessionStorage.getItem("freebookstore_admin_secret");
+
+    if (!adminSecret) {
+      adminSecret = window.prompt("Enter your Admin Secret:");
+
+      if (!adminSecret) {
+        return false;
+      }
+
+      sessionStorage.setItem(
+        "freebookstore_admin_secret",
+        adminSecret
+      );
+    }
+
+    try {
+      const response = await fetch("/api/books", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-secret": adminSecret,
+        },
+        body: JSON.stringify({
+          books: updatedBooks,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          sessionStorage.removeItem(
+            "freebookstore_admin_secret"
+          );
+        }
+
+        throw new Error(data.error || "Could not save books.");
+      }
+
+      setBooks(updatedBooks);
+      return true;
+    } catch (error) {
+      console.error(error);
+      alert(error.message || "Failed to save books.");
+      return false;
+    }
+  }
+
+  async function deleteBook(id) {
     const book = books.find((b) => b.id === id);
 
     if (!book) return;
 
     const confirmed = window.confirm(
-      `Delete "${book.title}"? This cannot be undone in this browser.`
+      `Delete "${book.title}"? This cannot be undone.`
     );
 
     if (!confirmed) return;
 
-    setBooks((prev) => prev.filter((b) => b.id !== id));
+    const updatedBooks = books.filter((b) => b.id !== id);
+
+    const success = await updateBooksOnServer(updatedBooks);
+
+    if (success) {
+      alert("Book deleted successfully.");
+    }
   }
 
-  function togglePublished(id) {
-    setBooks((prev) =>
-      prev.map((book) =>
-        book.id === id
-          ? { ...book, published: book.published === false }
-          : book
-      )
+  async function togglePublished(id) {
+    const updatedBooks = books.map((book) =>
+      book.id === id
+        ? { ...book, published: book.published === false }
+        : book
     );
+
+    const success = await updateBooksOnServer(updatedBooks);
+
+    if (success) {
+      const changedBook = updatedBooks.find((b) => b.id === id);
+      alert(
+        changedBook?.published
+          ? "Book published successfully."
+          : "Book hidden successfully."
+      );
+    }
   }
 
-  function resetLocalData() {
+  async function resetLocalData() {
     const confirmed = window.confirm(
       "Reset the Admin Panel to the original 12 books?"
     );
@@ -149,7 +255,11 @@ export default function Admin() {
       published: true,
     }));
 
-    setBooks(resetBooks);
+    const success = await updateBooksOnServer(resetBooks);
+
+    if (success) {
+      alert("Books reset successfully.");
+    }
   }
 
   return (
