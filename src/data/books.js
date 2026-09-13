@@ -244,7 +244,7 @@ export const books = [
     "language": "English",
     "isFree": true,
     "description": "Learn about money management ",
-    "published": true,
+    "published": false,
     "pdfUrl": "https://res.cloudinary.com/xy6is0nn/image/upload/v1789288974/odm81tbwwcd29xhg9j0q.pdf"
   }
 ];
