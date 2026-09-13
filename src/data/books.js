@@ -239,12 +239,12 @@ export const books = [
     "category": "fiction",
     "rating": 4.5,
     "ratingCount": 0,
-    "pages": 100,
+    "pages": 225,
     "year": 2026,
     "language": "English",
     "isFree": true,
     "description": "Learn about money management ",
-    "published": false,
+    "published": true,
     "pdfUrl": "https://res.cloudinary.com/xy6is0nn/image/upload/v1789288974/odm81tbwwcd29xhg9j0q.pdf"
   }
 ];
