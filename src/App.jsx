@@ -634,7 +634,7 @@ function BookDetailsPage({ book, onOpen, onRead, library, onToggleLibrary }) {
             </GreenButton>
             {book.downloadable && book.pdfUrl ? (
               <a
-                href={book.pdfUrl}
+                href={book.pdfUrl.replace("/upload/", "/upload/fl_attachment/")}
                 download={`${book.title}.pdf`}
                 className="inline-flex items-center justify-center gap-2 rounded-full font-medium px-6 py-3 text-white border transition-all duration-200 hover:border-[#00E676]/50 hover:text-[#00E676] active:scale-[0.98] w-full sm:w-auto"
                 style={{ borderColor: "rgba(255,255,255,0.14)", background: "transparent" }}
