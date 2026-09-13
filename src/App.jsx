@@ -82,8 +82,8 @@ const PDF_MAP = {
 
 BOOKS.forEach((b) => {
   b.cover = COVER_MAP[b.id] || FALLBACK_COVER;
-  b.pdfUrl = PDF_MAP[b.id] || null;
-  b.downloadable = Boolean(PDF_MAP[b.id]);
+  b.pdfUrl = b.pdfUrl || null;
+  b.downloadable = Boolean(b.pdfUrl);
 });
 
 const CHAPTERS = [

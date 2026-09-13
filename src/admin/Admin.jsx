@@ -14,6 +14,7 @@ const emptyBook = {
   isFree: true,
   description: "",
   published: true,
+  pdfUrl: "",
 };
 
 export default function Admin() {
@@ -33,6 +34,7 @@ export default function Admin() {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState(emptyBook);
+  const [uploadingPdf, setUploadingPdf] = useState(false);
 
   useEffect(() => {
     localStorage.setItem("freebookstore_books", JSON.stringify(books));
@@ -88,6 +90,58 @@ export default function Admin() {
           ? Number(value)
           : value,
     }));
+  }
+
+  async function uploadPdf(file) {
+    if (!file) return;
+
+    if (file.type !== "application/pdf") {
+      alert("Please select a PDF file.");
+      return;
+    }
+
+    const maxSize = 10 * 1024 * 1024;
+
+    if (file.size > maxSize) {
+      alert("PDF must be 10 MB or smaller on the current Cloudinary plan.");
+      return;
+    }
+
+    setUploadingPdf(true);
+
+    try {
+      const data = new FormData();
+      data.append("file", file);
+      data.append("upload_preset", "freebookstore_pdfs");
+
+      const response = await fetch(
+        "https://api.cloudinary.com/v1_1/xy6is0nn/auto/upload",
+        {
+          method: "POST",
+          body: data,
+        }
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          result.error?.message || "Cloudinary upload failed."
+        );
+      }
+
+      setForm((current) => ({
+        ...current,
+        pdfUrl: result.secure_url,
+      }));
+
+      alert("PDF uploaded successfully.");
+    } catch (error) {
+      console.error(error);
+      alert(error.message || "PDF upload failed.");
+    } finally {
+      setUploadingPdf(false);
+    }
   }
 
   async function saveBook(e) {
@@ -482,6 +536,32 @@ export default function Admin() {
                   onChange={handleChange}
                 />
               </div>
+
+          <div className="space-y-2">
+            <label className="block text-sm text-gray-400 mb-2">
+              PDF Book
+            </label>
+
+            <input
+              type="file"
+              accept="application/pdf,.pdf"
+              disabled={uploadingPdf}
+              onChange={(e) => uploadPdf(e.target.files?.[0])}
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3"
+            />
+
+            {uploadingPdf && (
+              <p className="text-sm text-yellow-400">
+                Uploading PDF to Cloudinary...
+              </p>
+            )}
+
+            {form.pdfUrl && !uploadingPdf && (
+              <p className="text-sm text-green-400">
+                ✓ PDF uploaded successfully
+              </p>
+            )}
+          </div>
 
               <div>
                 <label className="block text-sm text-gray-400 mb-2">
