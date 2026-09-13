@@ -194,7 +194,11 @@ export default function Admin() {
           );
         }
 
-        throw new Error(data.error || "Could not save books.");
+        throw new Error(
+        data.details
+          ? `${data.error || "Could not save books."} — ${typeof data.details === "string" ? data.details : JSON.stringify(data.details)}`
+          : data.error || "Could not save books."
+      );
       }
 
       setBooks(updatedBooks);
@@ -246,7 +250,11 @@ export default function Admin() {
           );
         }
 
-        throw new Error(data.error || "Could not save books.");
+        throw new Error(
+        data.details
+          ? `${data.error || "Could not save books."} — ${typeof data.details === "string" ? data.details : JSON.stringify(data.details)}`
+          : data.error || "Could not save books."
+      );
       }
 
       setBooks(updatedBooks);
