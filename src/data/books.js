@@ -216,5 +216,20 @@ export const books = [
     "isFree": true,
     "description": "Testing the new admin system",
     "published": true
+  },
+  {
+    "id": "14",
+    "title": "Rich dad poor dad ",
+    "author": "Robert Kiyosaki and Sharon L. Lechter.",
+    "category": "fiction",
+    "rating": 4.5,
+    "ratingCount": 0,
+    "pages": 100,
+    "year": 2026,
+    "language": "English",
+    "isFree": true,
+    "description": "",
+    "published": true,
+    "pdfUrl": "https://res.cloudinary.com/xy6is0nn/image/upload/v1789288387/djmotkbpagm3jgnqcxya.pdf"
   }
 ];
