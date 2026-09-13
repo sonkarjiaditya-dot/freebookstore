@@ -246,5 +246,20 @@ export const books = [
     "description": "Learn about money management ",
     "published": true,
     "pdfUrl": "https://res.cloudinary.com/xy6is0nn/image/upload/v1789288974/odm81tbwwcd29xhg9j0q.pdf"
+  },
+  {
+    "id": "16",
+    "title": "Rich Dad Poor Dad",
+    "author": "Robert Kiyosaki and Sharon Lechter",
+    "category": "fiction",
+    "rating": 4.5,
+    "ratingCount": 0,
+    "pages": 250,
+    "year": 2026,
+    "language": "English",
+    "isFree": true,
+    "description": "",
+    "published": true,
+    "pdfUrl": "https://res.cloudinary.com/xy6is0nn/image/upload/v1789311174/kiqomi2yqfga96eqlb96.pdf"
   }
 ];
