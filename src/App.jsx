@@ -967,7 +967,7 @@ export default function App() {
       />
     );
   } else if (route.page === "details") {
-    content = <BookDetailsPage book={selectedBook} onOpen={onOpen} onRead={(id) => nav("reading", { id })} library={library} onToggleLibrary={toggleLibrary} />;
+    content = <BookDetailsPage book={selectedBook} onOpen={onOpen} onRead={(id) => { const book = BOOKS.find((b) => b.id === id); if (book?.pdfUrl) window.open(book.pdfUrl, "_blank", "noopener,noreferrer"); else nav("reading", { id }); }} library={library} onToggleLibrary={toggleLibrary} />;
   } else if (route.page === "reading") {
     content = <ReadingPage book={selectedBook} onBack={() => nav("details", { id: route.id })} />;
   } else if (route.page === "about") {
