@@ -261,5 +261,20 @@ export const books = [
     "description": "",
     "published": true,
     "pdfUrl": "https://res.cloudinary.com/xy6is0nn/image/upload/v1789311174/kiqomi2yqfga96eqlb96.pdf"
+  },
+  {
+    "id": "17",
+    "title": "Think and grow rich ",
+    "author": "Napoleon hill",
+    "category": "Non fiction",
+    "rating": 4.5,
+    "ratingCount": 0,
+    "pages": 100,
+    "year": 2026,
+    "language": "English",
+    "isFree": true,
+    "description": "Think and grow rich books ",
+    "published": true,
+    "pdfUrl": ""
   }
 ];
